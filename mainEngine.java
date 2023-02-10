@@ -7,7 +7,10 @@ import java.util.Scanner;
 
 class mainEngine {
 
-    private static final String DICTIONARY_FILE_PATH = "oxfordDict.txt";
+    // Create a list to store the user's correct guesses
+    static List<String> correctGuesses = new ArrayList<>();
+
+    private static final String DICTIONARY_FILE_PATH = "notepad.txt";
 
     public static void main(String[] args) {
         // Load the dictionary from the file
@@ -16,9 +19,6 @@ class mainEngine {
 
         // Pick a random word from the dictionary
         String word = pickRandomWord(dictionary);
-
-        // Create a list to store the user's correct guesses
-        List<String> correctGuesses = new ArrayList<>();
 
         // Create a scanner to read user input
         Scanner scanner = new Scanner(System.in);
@@ -35,7 +35,7 @@ class mainEngine {
         // Loop until the user quits the game -- The condition for exiting the loop will
         // change
         String guess = "";
-        while (guess != "quit") {
+        while (!guess.equals("quit")) {
             System.out.print("Enter a word: ");
             guess = scanner.nextLine().toLowerCase();
 
@@ -47,8 +47,10 @@ class mainEngine {
                 } else {
                     System.out.println("This word was already guessed");
                 }
-            } else {
+            }
+            else {
                 System.out.println("Incorrect.");
+                
             }
         }
 
@@ -60,7 +62,7 @@ class mainEngine {
     }
 
     private static List<String> loadDictionary(String filePath) {
-        List<String> dictionary = new ArrayList<>();
+        List<String> dictionary = new ArrayList<String>();
         try (Scanner scanner = new Scanner(new File(filePath))) {
             while (scanner.hasNextLine()) {
                 dictionary.add(scanner.nextLine());
@@ -69,6 +71,7 @@ class mainEngine {
         } catch (IOException e) {
             System.err.println("Error reading dictionary file: " + e.getMessage());
         }
+        System.out.println(dictionary);
         return dictionary;
     }
 
@@ -79,8 +82,7 @@ class mainEngine {
         }
 
         String word = "";
-        //Gives 6 letter words?
-        while (word.length() < 7) {
+        while (word.length() < 8) {
             Random random = new Random();
             int index = random.nextInt(dictionary.size());
             word = dictionary.get(index);
@@ -88,10 +90,9 @@ class mainEngine {
         return word;
     }
 
-    private static boolean isValidGuess(String word, String guess) {
+    /*private static boolean isValidGuess(String word, String guess) {
         // Check if the guess can be formed using the letters in the word
-        //This does not work as it should. For some reason the words length is 3 above its actual size and then when you guess the word it sees the lengths don't match
-        word.toLowerCase();
+        word = word.toLowerCase();
         if (guess.length() > word.length()) {
             return false;
         } else if (guess.equals(word)) {
@@ -100,35 +101,62 @@ class mainEngine {
         }
 
         // Checking if the guess contains the same letter in all of them
-        char[] letters = guess.toCharArray();
-        ArrayList<Character> lettersList = new ArrayList<>();
-        for (int i = 0; i < letters.length; i++) {
-            lettersList.add(letters[i]);
+
+        ArrayList<String> lettersList = new ArrayList<>();
+        for (int i = 0; i < guess.length(); i++) {
+            lettersList.add(guess.substring(i, i + 1));
         }
 
-        for (int i = 0; i < lettersList.size(); i++) {
-            for (int j = 0; j < word.length(); j++) {
-                if (lettersList.get(i) == word.charAt(j)) {
-                    lettersList.remove(lettersList.get(j));
-                } 
-            }
+        ArrayList<String> wordLetters = new ArrayList<>();
+        for (int i = 0; i < word.length(); i++) {
+            wordLetters.add(word.substring(i, i + 1));
         }
-        if (lettersList.size() > 0) {
-            return false;
+
+        int i = 0;
+        while (i < lettersList.size()) {
+            if (wordLetters.contains(lettersList.get(i))) {
+                wordLetters.remove(wordLetters.indexOf(lettersList.get(i)));
+            } else {
+                return false;
+            }
+            i++;
         }
         return true;
+    } */
 
-/* 
-        String wordCopy = word;
+    public static boolean isValidGuess(String word, String guess) {
+        word = word.toLowerCase();
+        guess = guess.toLowerCase();
+        int[] wordCounts = new int[26];
+        int[] guessCounts = new int[26];
 
+        if (guess.length() > word.length()) {
+            return false;
+        } else if (guess.equals(word)) {
+            System.out.println("guess is the same word as the given one");
+            return false;
+        }
+    
+        // Count the occurrences of each letter in the word
+        for (int i = 0; i < word.length(); i++) {
+            char c = word.charAt(i);
+            wordCounts[c - 'a']++;
+        }
+    
+        // Count the occurrences of each letter in the guess
         for (int i = 0; i < guess.length(); i++) {
             char c = guess.charAt(i);
-            int index = wordCopy.indexOf(c);
-            if (index == -1) {
+            guessCounts[c - 'a']++;
+        }
+    
+        // Check if the counts of each letter in the guess are less than or equal to the counts in the word
+        for (int i = 0; i < 26; i++) {
+            if (guessCounts[i] > wordCounts[i]) {
                 return false;
             }
         }
+    
         return true;
-        */
     }
+    
 }
