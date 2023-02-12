@@ -19,7 +19,6 @@ class mainEngine {
 
         // Pick a random word from the dictionary
         String word = pickRandomWord(dictionary);
-
         // Create a scanner to read user input
         Scanner scanner = new Scanner(System.in);
 
@@ -71,7 +70,6 @@ class mainEngine {
         } catch (IOException e) {
             System.err.println("Error reading dictionary file: " + e.getMessage());
         }
-        System.out.println(dictionary);
         return dictionary;
     }
 
@@ -89,40 +87,6 @@ class mainEngine {
         }
         return word;
     }
-
-    /*private static boolean isValidGuess(String word, String guess) {
-        // Check if the guess can be formed using the letters in the word
-        word = word.toLowerCase();
-        if (guess.length() > word.length()) {
-            return false;
-        } else if (guess.equals(word)) {
-            System.out.println("guess is the same word as the given one");
-            return false;
-        }
-
-        // Checking if the guess contains the same letter in all of them
-
-        ArrayList<String> lettersList = new ArrayList<>();
-        for (int i = 0; i < guess.length(); i++) {
-            lettersList.add(guess.substring(i, i + 1));
-        }
-
-        ArrayList<String> wordLetters = new ArrayList<>();
-        for (int i = 0; i < word.length(); i++) {
-            wordLetters.add(word.substring(i, i + 1));
-        }
-
-        int i = 0;
-        while (i < lettersList.size()) {
-            if (wordLetters.contains(lettersList.get(i))) {
-                wordLetters.remove(wordLetters.indexOf(lettersList.get(i)));
-            } else {
-                return false;
-            }
-            i++;
-        }
-        return true;
-    } */
 
     public static boolean isValidGuess(String word, String guess) {
         word = word.toLowerCase();
